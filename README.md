@@ -165,4 +165,4 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 ```
-"last_login","ip" and "login_count" are optional fields and used to provide additional info for user connected to socket.
+"last_login","ip" and "login_count" are optional fields and used to provide additional info for user connected to socket. Those fields can be used for statistic information and for adding restrictions for IP addresses and login attempts. 
