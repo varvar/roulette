@@ -39,8 +39,8 @@ let onlineUsers = {};
 io.on('connection', function (socket) {
 	//Add new connected user to users object
 	let decoded = jwt.verify(socket.handshake.query.token, 'varvar');
-	io.to(socket.id).emit('message', `Welcome ${decoded.name}`);
 	io.emit('message', `${decoded.name} connected`);
+	io.to(socket.id).emit('message', `Welcome ${decoded.name}`);
 	onlineUsers[socket.id] = decoded.id;
 	console.log('User connected => ',onlineUsers);
 
@@ -51,20 +51,31 @@ io.on('connection', function (socket) {
 
 	// emit message to all clients except sender
 	socket.on('blast', (data) => {
-	    //io.emit('message', data);
 	    socket.broadcast.emit('message', data);
 	});
 
 	// emit a message to a random user
 	socket.on('spin', (data) => {
-	    let randomClient = helpers.randomProperty(onlineUsers,socket.id);
-	    console.log(`Sending SPIN message to socket ID ${randomClient}`);
-	    socket.broadcast.to(randomClient).emit('message', data);
+	    let randomClient = helpers.randomProperty(onlineUsers,socket.id,1);
+	    if(randomClient[0]){
+	    	console.log(`Sending SPIN message to socket ID ${randomClient[0]}`);
+	    	socket.broadcast.to(randomClient[0]).emit('message', data);
+	    }
 	});
 
 	// emit a message to X random users. X will be determined by the client.
 	socket.on('wild', (data) => {
-	    //socket.broadcast.to(socketid).emit('message', 'for your eyes only');
+		let usersCount = 5;
+		if(data.usersNumber && !isNaN(data.usersNumber))
+			usersCount = Number(data.usersNumber);
+		
+		let randomClients = helpers.randomProperty(onlineUsers,socket.id,usersCount);
+		if(randomClients.length > 0){
+			randomClients.forEach(element => {
+				console.log(`Sending WILD message to socket ID ${element}`);
+				socket.broadcast.to(element).emit('message', data.message || '');
+			});
+		}
 	});
 });
 
