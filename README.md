@@ -18,11 +18,9 @@ Once server started it will be accessible on http://localhost:8080/
 
 #### Register User ####
 
-  Run tokenizer process for provided .txt file. Average processing time for 5 MB file is about 10 sec and depends on download speed.
-
 * #### URL ####
 
-  http://{app-url}/process
+  http://{app-url}/api/users/register
 
 * #### Method: #### 
   
@@ -31,10 +29,14 @@ Once server started it will be accessible on http://localhost:8080/
 * #### Data Params #### 
 
   ```
-    {"file":"http://www.gutenberg.org/cache/epub/10/pg10.txt"}
+    {
+      "name":"User1",
+      "email":"test4@mail.com",
+      "password":"123456"
+    }
 
   ```
-    Please note, that file property required and not optional
+    Please note, that all properties are required and not optional
 
 * #### Success Response: #### 
   
@@ -42,14 +44,9 @@ Once server started it will be accessible on http://localhost:8080/
     **Content:** 
     ```
     {
-        "processStatus": "Done",
-        "fileName": "pg10.txt",
-        "chunksProcessed": 148,
-        "state": {
-            "totalProcessingTime": "7 sec",
-            "fileSize": "4.25 MB",
-            "downloadSpeed": "601.7 kB/sec"
-        }
+        "id": 5,
+        "name": "User1",
+        "email": "test4@mail.com"
     }
     ```
  
@@ -61,136 +58,52 @@ Once server started it will be accessible on http://localhost:8080/
   OR
 
   * **Code:** 400 BAD REQUEST <br />
-    **Content:** `{ "message": "File value can not be empty!" }`
+    **Content:** `{ "message": "Validation error" }`
 
 * #### Notes: #### 
 
-  "fileName" property from response object required for getting the words list in next API call, since it's an identifier for retrieving relevant json data. The rest of properties is for information only.  
+  Email address is unique property and cannot be added twice.  
 
 
-#### Get words list and repetitions with sorting options ####
-
-  Returns json data for provided file name with words list and repetitions.
+#### Login User ####
 
 * #### URL ####
 
-  http://localhost:3000/words/{fileName}/{sort}/{order}
-
-  For example: http://localhost:3000/words/pgs10.txt/repetitions/desc
+  http://{app-url}/api/users/login
 
 * #### Method: #### 
   
-  `GET`
+  `POST`
   
-* #### URL Params #### 
+* #### Data Params #### 
 
-  **Required:**
- 
-   `fileName=[string]`
-   
-   **Optional:**
-    
-      `sort=[repetitions/word]`
-      `order=[asc/desc]`
+  ```
+    {
+      "email":"test4@mail.com",
+      "password":"123456"
+    }
+
+  ```
+    Please note, that all properties are required and not optional
 
 * #### Success Response: #### 
   
   * **Code:** 200 <br />
     **Content:** 
     ```
-    [
-      {
-        "word": "project",
-        "repetitions": 5
-      },
-      {
-        "word": "gutenberg",
-        "repetitions": 4
-      },
-      {
-        "word": "ebook",
-        "repetitions": 8
-      },
-      ....
-    ]
+    {
+      "code": 200,
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6InRlc3QyIiwiZW1haWwiOiJ0ZXN0MkBtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGVLQVBBYXpWMm0wcDZyaHRFUVBvN082SnpES3F0cjd2UmhWZGFSaEE0Ry5KLnVIUGJVSW9LIiwiaXAiOm51bGwsImxhc3RMb2dpbiI6bnVsbCwibG9naW5Db3VudCI6bnVsbCwiY3JlYXRlZEF0IjoiMjAyMC0wNS0xMVQxMTo1OToxOS4wMDBaIiwidXBkYXRlZEF0IjoiMjAyMC0wNS0xMVQxMTo1OToxOS4wMDBaIiwiaWF0IjoxNTg5MTk4NDA2LCJleHAiOjE1ODkxOTg3MDZ9.tu27GFxtZJk-MjVgj5hMkPV7qnNoCoHmyJauV-Mmizk"
+  }
     ```
  
 * #### Error Response: #### 
 
-  * **Code:** 500 SERVER ERROR <br />
-    **Content:** 
-    ```
-    {
-      "message": {
-          "errno": -2,
-          "code": "ENOENT",
-          "syscall": "open",
-          "path": "/nlp/app/controllers/../../files/pgs10.txt.json"
-      }
-    }
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** `{ "message": "Email and password does not match" }`
 
-    ``` 
-    
-#### Pipe words list to client ####
+* #### Notes: #### 
 
-  Serving json data for provided file name via readable stream. This type of serving can increase request speed and performance.
+  Token returned in login response is JWT token and should be used for authentication in socket.io API  
 
-* #### URL ####
 
-  http://localhost:3000/pipe/{fileName}
-
-  For example: http://localhost:3000/pipe/pgs10.txt
-
-* #### Method: #### 
-  
-  `GET`
-  
-* #### URL Params #### 
-
-  **Required:**
- 
-   `fileName=[string]`
-   
-* #### Success Response: #### 
-  
-  * **Code:** 200 <br />
-    **Content:** 
-    ```
-    [
-      {
-        "word": "project",
-        "repetitions": 5
-      },
-      {
-        "word": "gutenberg",
-        "repetitions": 4
-      },
-      {
-        "word": "ebook",
-        "repetitions": 8
-      },
-      ....
-    ]
-    ```
- 
-* #### Error Response: #### 
-
-  * **Code:** 500 SERVER ERROR <br />
-    **Content:** 
-    ```
-    {
-      "message": {
-          "errno": -2,
-          "code": "ENOENT",
-          "syscall": "open",
-          "path": "/nlp/app/controllers/../../files/pgs10.txt.json"
-      }
-    }
-
-    ``` 
-        
-### Test engine
-
-Test engine based on Mocha as testing framework and Chai as assertion manager. There are two types of tests added: unit tests and integration/end to end tests. For current implementation there are no differences between integration and end to end tests.
-
-To run test cases just run "npm test" inside project folder.
