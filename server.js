@@ -9,6 +9,7 @@ const app = express();
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
+app.set('trust proxy', true);
 
 const db = require("./app/models");
 
@@ -40,13 +41,12 @@ io.on('connection', function (socket) {
 	//Add new connected user to users object
 	let decoded = jwt.verify(socket.handshake.query.token, 'varvar');
 	io.emit('message', `${decoded.name} connected`);
-	io.to(socket.id).emit('message', `Welcome ${decoded.name}`);
+	io.to(socket.id).emit('message', `Welcome ${decoded.name}! Your last visit was on ${decoded.lastLogin} from IP: ${decoded.ip}`);
 	onlineUsers[socket.id] = decoded.id;
-	console.log('User connected => ',onlineUsers);
+	
 
 	socket.on('disconnect', () => {
 	    delete onlineUsers[socket.id];
-	    console.log('User leave => ',onlineUsers); 
 	});
 
 	// emit message to all clients except sender
@@ -58,7 +58,6 @@ io.on('connection', function (socket) {
 	socket.on('spin', (data) => {
 	    let randomClient = helpers.randomProperty(onlineUsers,socket.id,1);
 	    if(randomClient[0]){
-	    	console.log(`Sending SPIN message to socket ID ${randomClient[0]}`);
 	    	socket.broadcast.to(randomClient[0]).emit('message', data);
 	    }
 	});
@@ -72,7 +71,6 @@ io.on('connection', function (socket) {
 		let randomClients = helpers.randomProperty(onlineUsers,socket.id,usersCount);
 		if(randomClients.length > 0){
 			randomClients.forEach(element => {
-				console.log(`Sending WILD message to socket ID ${element}`);
 				socket.broadcast.to(element).emit('message', data.message || '');
 			});
 		}

@@ -59,7 +59,13 @@ exports.login = async (req, res) => {
         if(user.length >0){
             const comparision = await bcrypt.compare(password, user[0].password)
             if(comparision){
+                let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||  req.socket.remoteAddress || req.connection.socket.remoteAddress;
                 let token = jwt.sign(user[0], 'varvar', { expiresIn: 60*5 });
+                await User.update({
+                    lastLogin:new Date(Date.now()).toISOString(),
+                    loginCount: user[0].loginCount+1,
+                    ip: ip === "::1" ? 'localhost' : ip
+                }, {where: { id: user[0].id } }, {transaction});
                 return res.send({
                     "code":200,
                     "token":token
