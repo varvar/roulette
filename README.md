@@ -150,7 +150,19 @@ JSON as following:
 
 The only table is used in application is "users":
 ```
-
+CREATE TABLE `users` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `name` varchar(255) DEFAULT NULL,
+ `email` varchar(255) NOT NULL,
+ `password` varchar(255) DEFAULT NULL,
+ `ip` varchar(255) DEFAULT NULL,
+ `last_login` datetime DEFAULT NULL,
+ `login_count` int(11) DEFAULT NULL,
+ `createdAt` datetime NOT NULL,
+ `updatedAt` datetime NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 ```
-
+"last_login","ip" and "login_count" are optional fields and used to provide additional info for user connected to socket.
