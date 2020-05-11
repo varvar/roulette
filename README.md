@@ -95,11 +95,11 @@ Once server started it will be accessible on http://localhost:8080/
   
 ### SOCKET.IO API Reference
 
-***Connection to socket API requires JWT token and socket server URL should look like this: 
+#### Connection to socket API requires JWT token and socket server URL should look like this: 
 
 https://mroulette.herokuapp.com/?token={JWT token} 
 
-***Server emits everything to "messages" channel, so all connected clients should listen to this channel. 
+#### Server emits everything to "messages" channel, so all connected clients should listen to this channel. 
 
 #### Blast ####
 
