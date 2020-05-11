@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const socket = require('socket.io');
 const jwt = require('jsonwebtoken');
 const socketioJwt = require('socketio-jwt');
+const helpers = require('./app/helpers/functions');
 
 const app = express();
 
@@ -33,30 +34,32 @@ io.set('authorization', socketioJwt.authorize({
   handshake: true
 }));
 
-let onlineUsers = [];
+let onlineUsers = {};
 
 io.on('connection', function (socket) {
+	//Add new connected user to users object
 	let decoded = jwt.verify(socket.handshake.query.token, 'varvar');
-	onlineUsers.push({
-		socketId:socket.id,
-		userId:decoded.id
-	});
+	io.to(socket.id).emit('message', `Welcome ${decoded.name}`);
+	io.emit('message', `${decoded.name} connected`);
+	onlineUsers[socket.id] = decoded.id;
+	console.log('User connected => ',onlineUsers);
 
 	socket.on('disconnect', () => {
-	    delete onlineUsers[socket.id]; 
+	    delete onlineUsers[socket.id];
+	    console.log('User leave => ',onlineUsers); 
 	});
 
-	// emit a message to all users
+	// emit message to all clients except sender
 	socket.on('blast', (data) => {
-	    console.log(onlineUsers);
-	    io.emit('message', data);
+	    //io.emit('message', data);
+	    socket.broadcast.emit('message', data);
 	});
 
 	// emit a message to a random user
 	socket.on('spin', (data) => {
-	    let randomElement = onlineUsers[Math.floor(Math.random() * onlineUsers.length)];
-	    //socket.broadcast.to(randomElement.socketId).emit('message', data);
-	    io.to(randomElement.socketId).emit('message', data);
+	    let randomClient = helpers.randomProperty(onlineUsers,socket.id);
+	    console.log(`Sending SPIN message to socket ID ${randomClient}`);
+	    socket.broadcast.to(randomClient).emit('message', data);
 	});
 
 	// emit a message to X random users. X will be determined by the client.
