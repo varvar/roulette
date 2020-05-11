@@ -1,9 +1,9 @@
-# Node.js Test Task
+# Message Roulette
 
 ### Project Setup
 ```
-git clone https://github.com/varvar/nlp.git
-cd to folder nlp
+git clone https://github.com/varvar/roulette.git
+cd to folder roulette
 npm install
 npm update
 ```
@@ -12,17 +12,17 @@ npm update
 ```
 npm start
 ```
-Once server started it will be accessible on http://localhost:3000/
+Once server started it will be accessible on http://localhost:8080/
 
-### API Reference
+### HTTP API Reference
 
-#### Perform tokenization process ####
+#### Register User ####
 
   Run tokenizer process for provided .txt file. Average processing time for 5 MB file is about 10 sec and depends on download speed.
 
 * #### URL ####
 
-  http://localhost:3000/process
+  http://{app-url}/process
 
 * #### Method: #### 
   
