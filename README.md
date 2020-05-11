@@ -101,8 +101,15 @@ https://mroulette.herokuapp.com/?token={JWT token}
 
 * Server emits everything to "messages" channel, so all connected clients should listen to this channel. 
 
-#### Blast ####
+### Blast ###
 
 Emit message to all clients except sender
 
+* #### Event Name ####
+
+ `blast`
+ 
+* #### Data supported #### 
+
+Any type of messages as plain text
 
