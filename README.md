@@ -93,6 +93,7 @@ Once server started it will be accessible on http://localhost:8080/
 
   Token returned in login response is JWT token and should be used for authentication in socket.io API 
   
+  
 ### SOCKET.IO API Reference
 
 * User connection to socket API requires JWT token and socket server URL should look like this: 
@@ -136,12 +137,20 @@ Emit a message to X random users except sender. X can be determined by the user.
  
 * #### Data supported #### 
 
-Json as following:
+JSON as following:
 ```
 {
   "usersNumber":3,// number
   "messsage": "Hello world" // any string
 }
+
+```
+
+### DB schema
+
+The only table is used in application is "users":
+```
+
 
 ```
 
