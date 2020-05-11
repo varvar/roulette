@@ -16,12 +16,14 @@ exports.create = async (req, res) => {
 
     let password = req.body.password;
     const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds)
-
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||  req.socket.remoteAddress || req.connection.socket.remoteAddress;
+                
     // Create a User
     const postObj = {
         name: req.body.name,
         email: req.body.email,
-        password: encryptedPassword
+        password: encryptedPassword,
+        ip: ip === "::1" ? 'localhost' : ip
     };
 
     User.create(postObj)
