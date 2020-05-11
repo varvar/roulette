@@ -95,21 +95,53 @@ Once server started it will be accessible on http://localhost:8080/
   
 ### SOCKET.IO API Reference
 
-* Connection to socket API requires JWT token and socket server URL should look like this: 
+* User connection to socket API requires JWT token and socket server URL should look like this: 
 
 https://mroulette.herokuapp.com/?token={JWT token} 
 
-* Server emits everything to "messages" channel, so all connected clients should listen to this channel. 
+* Server emits everything to "messages" channel, so all connected users should listen to this channel. 
 
 ### Blast ###
 
-Emit message to all clients except sender
+Emit message to all users except sender
 
-* #### Event Name ####
+* #### Server Event Name ####
 
  `blast`
  
 * #### Data supported #### 
 
 Any type of messages as plain text
+
+### Spin ###
+
+Emit message to a random user except sender
+
+* #### Server Event Name ####
+
+ `spin`
+ 
+* #### Data supported #### 
+
+Any type of messages as plain text
+
+
+### Wild ###
+
+Emit a message to X random users except sender. X can be determined by the user. The default value in case it's not provided by user is 5.
+
+* #### Server Event Name ####
+
+ `wild`
+ 
+* #### Data supported #### 
+
+Json as following:
+```
+{
+  "usersNumber":3,// number
+  "messsage": "Hello world" // any string
+}
+
+```
 
