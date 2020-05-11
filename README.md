@@ -1,6 +1,6 @@
 # Message Roulette
 
-### Project Setup
+### Project Setup on local machine
 ```
 git clone https://github.com/varvar/roulette.git
 cd to folder roulette
@@ -14,13 +14,15 @@ npm start
 ```
 Once server started it will be accessible on http://localhost:8080/
 
+Running application example can be found on https://mroulette.herokuapp.com
+
 ### HTTP API Reference
 
 #### Register User ####
 
 * #### URL ####
 
-  http://{app-url}/api/users/register
+  https://mroulette.herokuapp.com/api/users/register
 
 * #### Method: #### 
   
@@ -50,16 +52,6 @@ Once server started it will be accessible on http://localhost:8080/
     }
     ```
  
-* #### Error Response: #### 
-
-  * **Code:** 500 SERVER ERROR <br />
-    **Content:** `{ errorObj }`
-
-  OR
-
-  * **Code:** 400 BAD REQUEST <br />
-    **Content:** `{ "message": "Validation error" }`
-
 * #### Notes: #### 
 
   Email address is unique property and cannot be added twice.  
@@ -69,7 +61,7 @@ Once server started it will be accessible on http://localhost:8080/
 
 * #### URL ####
 
-  http://{app-url}/api/users/login
+  https://mroulette.herokuapp.com/api/users/login
 
 * #### Method: #### 
   
@@ -97,13 +89,15 @@ Once server started it will be accessible on http://localhost:8080/
   }
     ```
  
-* #### Error Response: #### 
-
-  * **Code:** 400 BAD REQUEST <br />
-    **Content:** `{ "message": "Email and password does not match" }`
-
 * #### Notes: #### 
 
-  Token returned in login response is JWT token and should be used for authentication in socket.io API  
+  Token returned in login response is JWT token and should be used for authentication in socket.io API 
+  
+### SOCKET.IO API Reference
 
+Connection to socket API requires JWT token and socket server URL should look like this: 
+
+https://mroulette.herokuapp.com/?token={JWT token} 
+
+#### Blast ####
 
