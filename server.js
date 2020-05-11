@@ -41,7 +41,11 @@ io.on('connection', function (socket) {
 	//Add new connected user to users object
 	let decoded = jwt.verify(socket.handshake.query.token, 'varvar');
 	io.emit('message', `${decoded.name} connected`);
-	io.to(socket.id).emit('message', `Welcome ${decoded.name}! Your last visit was on ${decoded.lastLogin} from IP: ${decoded.ip}`);
+	if(decoded.lastLogin){
+		io.to(socket.id).emit('message', `Welcome ${decoded.name}! Your last visit was on ${decoded.lastLogin} from IP: ${decoded.ip}`);
+	} else{
+		io.to(socket.id).emit('message', `Welcome ${decoded.name}! This is your first visit! Your IP: ${decoded.ip}`);
+	}
 	onlineUsers[socket.id] = decoded.id;
 	
 
