@@ -1,5 +1,7 @@
 # Message Roulette
 
+Running application example can be found on https://mroulette.herokuapp.com
+
 ### Project Setup on local machine
 ```
 git clone https://github.com/varvar/roulette.git
@@ -13,8 +15,6 @@ npm update
 npm start
 ```
 Once server started it will be accessible on http://localhost:8080/
-
-Running application example can be found on https://mroulette.herokuapp.com
 
 ### HTTP API Reference
 
@@ -95,9 +95,14 @@ Running application example can be found on https://mroulette.herokuapp.com
   
 ### SOCKET.IO API Reference
 
-Connection to socket API requires JWT token and socket server URL should look like this: 
+***Connection to socket API requires JWT token and socket server URL should look like this: 
 
 https://mroulette.herokuapp.com/?token={JWT token} 
 
+***Server emits everything to "messages" channel, so all connected clients should listen to this channel. 
+
 #### Blast ####
+
+Emit message to all clients except sender
+
 
